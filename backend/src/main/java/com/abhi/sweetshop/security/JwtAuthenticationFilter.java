@@ -45,14 +45,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String token = authHeader.substring(7);
         
         try {
-            String username = jwtService.extractUsername(token);
-            
-            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+            if (jwtService.validateToken(token)) {
+                String username = jwtService.extractUsername(token);
                 
-                if (jwtService.validateToken(token, userDetails)) {
-                    var user = userRepository.findByEmail(username).orElse(null);
-                    if (user != null) {
+                if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                    UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+                    
+                    if (jwtService.validateToken(token, userDetails)) {
                         com.abhi.sweetshop.model.Role role = jwtService.extractRole(token);
                         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                                 userDetails,
