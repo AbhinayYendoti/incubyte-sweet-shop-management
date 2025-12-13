@@ -16,6 +16,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 /**
@@ -155,9 +156,10 @@ class UserRegistrationTests {
         // Then: Password should be hashed before saving to repository
         
         String plainPassword = "PlainTextPassword123";
+        String hashedPassword = "$2a$10$hashedPasswordHashThatIsDifferentFromPlain";
         
         when(userRepository.findByEmail(validEmail)).thenReturn(Optional.empty());
-        when(passwordEncoder.encode(anyString())).thenReturn("hashed-password");
+        when(passwordEncoder.encode(plainPassword)).thenReturn(hashedPassword);
         when(userRepository.save(any(User.class))).thenAnswer(invocation -> {
             User user = invocation.getArgument(0);
             user.setId(1L);
