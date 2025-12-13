@@ -7,9 +7,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
 
@@ -28,7 +28,9 @@ class UserRegistrationTests {
     @Mock
     private UserRepository userRepository;
 
-    @InjectMocks
+    @Mock
+    private PasswordEncoder passwordEncoder;
+
     private UserService userService;
 
     private User testUser;
@@ -41,6 +43,8 @@ class UserRegistrationTests {
         validEmail = "test@example.com";
         validPassword = "Password123";
         validName = "Test User";
+        
+        userService = new UserService(userRepository, passwordEncoder);
         
         testUser = new User();
         testUser.setEmail(validEmail);
@@ -57,6 +61,7 @@ class UserRegistrationTests {
         // Then: User should be saved to repository and returned
         
         when(userRepository.findByEmail(validEmail)).thenReturn(Optional.empty());
+        when(passwordEncoder.encode(anyString())).thenReturn("hashed-password");
         when(userRepository.save(any(User.class))).thenAnswer(invocation -> {
             User user = invocation.getArgument(0);
             user.setId(1L); // Simulate database ID assignment
@@ -152,6 +157,7 @@ class UserRegistrationTests {
         String plainPassword = "PlainTextPassword123";
         
         when(userRepository.findByEmail(validEmail)).thenReturn(Optional.empty());
+        when(passwordEncoder.encode(anyString())).thenReturn("hashed-password");
         when(userRepository.save(any(User.class))).thenAnswer(invocation -> {
             User user = invocation.getArgument(0);
             user.setId(1L);

@@ -1,43 +1,52 @@
 package com.abhi.sweetshop.service;
 
+import com.abhi.sweetshop.dto.auth.LoginRequest;
+import com.abhi.sweetshop.dto.auth.LoginResponse;
+import com.abhi.sweetshop.dto.auth.RegisterRequest;
+import com.abhi.sweetshop.model.Role;
 import com.abhi.sweetshop.model.User;
 import com.abhi.sweetshop.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Service
 public class AuthenticationService {
 
     private final UserRepository userRepository;
-    private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
 
-    public AuthenticationService(UserRepository userRepository, JwtService jwtService, PasswordEncoder passwordEncoder) {
+    public AuthenticationService(UserRepository userRepository,
+                                 PasswordEncoder passwordEncoder,
+                                 JwtService jwtService) {
         this.userRepository = userRepository;
-        this.jwtService = jwtService;
         this.passwordEncoder = passwordEncoder;
+        this.jwtService = jwtService;
     }
 
-    public String login(String email, String password) {
-        // Find user by email
-        Optional<User> userOptional = userRepository.findByEmail(email);
-        
-        // If user not found, throw exception
-        if (userOptional.isEmpty()) {
-            throw new IllegalArgumentException("Invalid email or authentication failed");
-        }
+    public User register(RegisterRequest request) {
+        User user = new User();
+        user.setName(request.getName());
+        user.setEmail(request.getEmail());
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setRole(Role.USER);
 
-        User user = userOptional.get();
+        return userRepository.save(user);
+    }
 
-        // Verify password using PasswordEncoder
+    public LoginResponse login(LoginRequest request) {
+        String email = request.getEmail();
+        String password = request.getPassword();
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Invalid credentials"));
+
         if (!passwordEncoder.matches(password, user.getPassword())) {
-            throw new IllegalArgumentException("Invalid password or authentication failed");
+            throw new RuntimeException("Invalid credentials");
         }
 
-        // Generate and return JWT token
-        return jwtService.generateToken(user);
+        String token = jwtService.generateToken(user);
+
+        return new LoginResponse(token, user.getId(), user.getName());
     }
 }
-

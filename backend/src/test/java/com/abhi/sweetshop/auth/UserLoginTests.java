@@ -1,5 +1,7 @@
 package com.abhi.sweetshop.auth;
 
+import com.abhi.sweetshop.dto.auth.LoginRequest;
+import com.abhi.sweetshop.dto.auth.LoginResponse;
 import com.abhi.sweetshop.model.User;
 import com.abhi.sweetshop.repository.UserRepository;
 import com.abhi.sweetshop.service.AuthenticationService;
@@ -72,10 +74,11 @@ class UserLoginTests {
         when(passwordEncoder.matches(validPassword, hashedPassword)).thenReturn(true);
         when(jwtService.generateToken(any(User.class))).thenReturn(jwtToken);
 
-        String result = authenticationService.login(validEmail, validPassword);
+        LoginResponse result = authenticationService.login(new LoginRequest(validEmail, validPassword));
 
-        assertNotNull(result, "JWT token should not be null");
-        assertEquals(jwtToken, result, "Returned token should match generated token");
+        assertNotNull(result, "LoginResponse should not be null");
+        assertNotNull(result.getToken(), "JWT token should not be null");
+        assertEquals(jwtToken, result.getToken(), "Returned token should match generated token");
         verify(userRepository, times(1)).findByEmail(validEmail);
         verify(passwordEncoder, times(1)).matches(validPassword, hashedPassword);
         verify(jwtService, times(1)).generateToken(testUser);
@@ -92,7 +95,7 @@ class UserLoginTests {
         when(userRepository.findByEmail(validEmail)).thenReturn(Optional.empty());
 
         Exception exception = assertThrows(Exception.class, () -> {
-            authenticationService.login(validEmail, validPassword);
+            authenticationService.login(new LoginRequest(validEmail, validPassword));
         }, "Should throw exception for non-existent email");
 
         assertNotNull(exception, "Exception should be thrown");
@@ -121,7 +124,7 @@ class UserLoginTests {
         when(passwordEncoder.matches(wrongPassword, hashedPassword)).thenReturn(false);
 
         Exception exception = assertThrows(Exception.class, () -> {
-            authenticationService.login(validEmail, wrongPassword);
+            authenticationService.login(new LoginRequest(validEmail, wrongPassword));
         }, "Should throw exception for incorrect password");
 
         assertNotNull(exception, "Exception should be thrown");
@@ -148,7 +151,7 @@ class UserLoginTests {
         when(passwordEncoder.matches(validPassword, hashedPassword)).thenReturn(true);
         when(jwtService.generateToken(any(User.class))).thenReturn(jwtToken);
 
-        authenticationService.login(validEmail, validPassword);
+        authenticationService.login(new LoginRequest(validEmail, validPassword));
 
         // Verify that passwordEncoder.matches() is called with the correct arguments
         verify(passwordEncoder, times(1)).matches(eq(validPassword), eq(hashedPassword));
@@ -171,7 +174,7 @@ class UserLoginTests {
         when(userRepository.findByEmail("nonexistent@example.com")).thenReturn(Optional.empty());
 
         assertThrows(Exception.class, () -> {
-            authenticationService.login("nonexistent@example.com", validPassword);
+            authenticationService.login(new LoginRequest("nonexistent@example.com", validPassword));
         }, "Should throw exception for non-existent email");
 
         verify(jwtService, never()).generateToken(any(User.class));
@@ -184,7 +187,7 @@ class UserLoginTests {
         when(passwordEncoder.matches("wrongPassword", hashedPassword)).thenReturn(false);
 
         assertThrows(Exception.class, () -> {
-            authenticationService.login(validEmail, "wrongPassword");
+            authenticationService.login(new LoginRequest(validEmail, "wrongPassword"));
         }, "Should throw exception for incorrect password");
 
         verify(jwtService, never()).generateToken(any(User.class));
