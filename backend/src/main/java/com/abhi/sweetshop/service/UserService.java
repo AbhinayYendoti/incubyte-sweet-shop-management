@@ -1,6 +1,7 @@
 package com.abhi.sweetshop.service;
 
 import com.abhi.sweetshop.exception.UserAlreadyExistsException;
+import com.abhi.sweetshop.model.Role;
 import com.abhi.sweetshop.model.User;
 import com.abhi.sweetshop.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -18,7 +19,6 @@ public class UserService {
     }
 
     public User register(String email, String password, String name) {
-        // Validate required fields
         if (email == null || email.isEmpty()) {
             throw new IllegalArgumentException("Email cannot be empty");
         }
@@ -29,21 +29,16 @@ public class UserService {
             throw new IllegalArgumentException("Name cannot be empty");
         }
 
-        // Check if email already exists
         if (userRepository.findByEmail(email).isPresent()) {
             throw new UserAlreadyExistsException("Email already exists");
         }
 
-        // Create new user
         User user = new User();
         user.setEmail(email);
         user.setName(name);
-        
-        // Hash password before saving
-        String hashedPassword = passwordEncoder.encode(password);
-        user.setPassword(hashedPassword);
+        user.setPassword(passwordEncoder.encode(password));
+        user.setRole(Role.USER);
 
-        // Save and return user
         return userRepository.save(user);
     }
 }
