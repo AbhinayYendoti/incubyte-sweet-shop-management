@@ -1,127 +1,175 @@
 Sweet Shop Management System
-This is a full‑stack Sweet Shop Management System built as a TDD kata. It simulates a simple mithai shop where users can browse sweets, search and filter them, and (optionally) purchase or manage inventory. The project is designed to show skills in API design, database modeling, frontend development, testing, and responsible AI usage.​
+
+A full-stack Sweet Shop Management System built as a Test-Driven Development (TDD) kata.
+The application simulates a traditional Indian mithai shop where users can browse, search, and filter sweets, while admins can manage inventory.
+
+This project demonstrates clean architecture, API design, database modeling, frontend development, testing discipline, and responsible AI usage.
 
 1. Project Overview
-The application has three main parts:
 
-A Spring Boot backend that exposes REST APIs for authentication, sweets management, and inventory actions.​
+The application consists of three main layers:
 
-A PostgreSQL database that stores users, sweets, and related data.​
+Backend (Spring Boot)
+Exposes REST APIs for authentication, sweets management, and inventory operations.
 
-A React frontend that provides a modern single‑page UI for customers and admins.​
+Database (PostgreSQL)
+Stores users, sweets, categories, pricing, stock levels, and image references.
 
-From a user’s perspective, the app allows:
+Frontend (React + TypeScript)
+A modern single-page application for customers and administrators.
 
-Registering and logging in.
+User Capabilities
 
-Viewing a catalog of traditional Indian sweets with images, prices, categories, and descriptions.
+Register and log in
 
-Searching sweets by name or description and filtering by category (Mithai, Ladoo, Barfi, Halwa, Namkeen).
+View a catalog of traditional Indian sweets
 
-Seeing which sweets are available and their prices.
+Search sweets by name or description
 
-From an admin’s perspective (depending on how far you implement):
+Filter sweets by category
 
-Adding, editing, and deleting sweets.
+View availability and pricing
 
-Managing stock by restocking or marking purchases.
+Purchase sweets (if inventory is enabled)
 
-The goal is not just to “make it work”, but to follow clean architecture, tests, and modern dev practices.​
+Admin Capabilities
+
+Add, update, and delete sweets
+
+Restock inventory
+
+Control availability through quantity management
+
+The goal is not just functionality, but maintainable, testable, and well-structured code following modern development practices.
 
 2. Tech Stack
-Backend: Java, Spring Boot (REST API, Spring Security, Spring Data JPA).​
+Backend
 
-Database: PostgreSQL (persistent storage, not in‑memory).​
+Java 17
 
-Frontend: React + TypeScript (SPA with modern component‑based UI).​
+Spring Boot
 
-Build & Tools: Maven for backend, npm/Vite (or React scripts) for frontend.
+Spring Security (JWT-based authentication)
 
-Testing:
+Spring Data JPA
 
-Backend: JUnit / Spring Boot test stack (unit + integration where implemented).
+Flyway (database migrations)
 
-Frontend: Optional React testing (you can mention Jest/RTL if used).
+Database
+
+PostgreSQL (persistent storage)
+
+Frontend
+
+React
+
+TypeScript
+
+Vite / npm
+
+Build & Tooling
+
+Maven (backend)
+
+npm (frontend)
+
+Testing
+
+Backend: JUnit, Spring Boot Test (unit + integration tests)
+
+Frontend: Optional Jest / React Testing Library (if implemented)
 
 3. Features Implemented
 3.1 Authentication
-User registration and login endpoints under /api/auth.
 
-Token‑based authentication (JWT) to protect certain endpoints, such as sweets management and inventory operations.​
+User registration and login under /api/auth
 
-Frontend forms for registering and logging in, with context/state to store the current user session.
+JWT-based authentication
+
+Protected endpoints for admin and inventory operations
+
+Frontend auth forms with session handling
 
 3.2 Sweets API
-Core sweets endpoints (exact path names may vary slightly depending on your implementation):​
 
-POST /api/sweets – Add a new sweet (admin).
+Core REST endpoints (paths may vary slightly):
 
-GET /api/sweets – View all available sweets.
+POST /api/sweets – Add a new sweet (admin)
 
-GET /api/sweets/search – Search sweets by name, category, or price range (if implemented).
+GET /api/sweets – Fetch all sweets
 
-PUT /api/sweets/{id} – Update sweet details (admin).
+GET /api/sweets/search – Search by name, category, or other filters
 
-DELETE /api/sweets/{id} – Delete a sweet (admin only).
+PUT /api/sweets/{id} – Update sweet details (admin)
 
-Each sweet has:
+DELETE /api/sweets/{id} – Delete a sweet (admin)
 
-id – unique identifier.
+Each sweet includes:
 
-name – e.g. Laddu, Jalebi.
+id
 
-description – short text description.
+name
 
-category – e.g. mithai, barfi, halwa, namkeen.
+description
 
-price – numeric value.
+category (mithai, ladoo, barfi, halwa, namkeen)
 
-quantity – stock level (used with purchase/restock).
+price
 
-imageUrl – path to a local image served by Spring from src/main/resources/static/images/sweets/….
+quantity
+
+imageUrl (served locally from static resources)
 
 3.3 Inventory Operations
-POST /api/sweets/{id}/purchase – Decrease quantity when a sweet is purchased; disabled when quantity is zero.​
 
-POST /api/sweets/{id}/restock – Admin‑only endpoint to increase stock.​
+POST /api/sweets/{id}/purchase – Decrease stock on purchase
+
+POST /api/sweets/{id}/restock – Increase stock (admin only)
+
+Purchase disabled when quantity reaches zero
 
 3.4 Frontend Functionality
-The React SPA includes:​
 
-Auth Pages:
+Authentication Pages
 
-Register and Login forms that talk to the backend auth APIs.
+Login and registration forms integrated with backend APIs
 
-Dashboard / Shop Page:
+Dashboard / Shop Page
 
-Displays all sweets with name, price, description, category badge, and image.
+Card-based layout displaying sweets with images
 
-Category buttons (All Sweets, Mithai, Ladoo, Barfi, Halwa, Namkeen) to filter the list.
+Category filters (All, Mithai, Ladoo, Barfi, Halwa, Namkeen)
 
-A search bar that filters sweets in real time by name and description, combined with the category filter.
+Real-time search by name and description
 
-A “Purchase” button on each sweet, disabled if quantity is 0 (if inventory is wired through).
+Purchase button disabled when out of stock
 
-Admin UI (if enabled):
+Admin UI (if enabled)
 
-Forms to add, edit, and delete sweets (hooked to the protected sweets endpoints).
+Add, update, and delete sweets
 
-Design:
+Inventory management via protected APIs
 
-Designed as a modern “Mithai Palace” style dashboard with card‑based layout, colors, fonts, and spacing tuned to look like a clean product UI.
+Design
+
+Clean, modern “Mithai Palace” themed UI
+
+Focus on usability, spacing, and visual clarity
 
 4. How to Run the Project Locally
 4.1 Prerequisites
+
 Java 17+
 
 Maven
 
-Node.js and npm
+Node.js & npm
 
-PostgreSQL running locally (or accessible DB instance)
+PostgreSQL (local or remote)
 
-4.2 Set up the database
-Create a PostgreSQL database user and database, for example:
+4.2 Database Setup
+
+Create a PostgreSQL database:
 
 Database: sweetshop
 
@@ -129,108 +177,129 @@ User: sweetshop_user
 
 Password: your_password
 
-Update the Spring Boot configuration (usually application.yml or application.properties) with your DB URL, username, and password, e.g.:
+Update application.yml or application.properties:
 
 jdbc:postgresql://localhost:5432/sweetshop
 
-Flyway migrations will run automatically on backend startup and create the schema, including the sweets table and new columns like image_url and category.
 
-4.3 Run the backend
-bash
+Flyway migrations will automatically create the schema, including tables and columns such as image_url and category.
+
+4.3 Run the Backend
 cd backend
 mvn spring-boot:run
-The API will be available at http://localhost:8080.
 
-Static images are served from src/main/resources/static/images/sweets, accessible via URLs like /images/sweets/laddu.jpg. Spring Security is configured to permit /images/** and public API endpoints, while protecting others.​
 
-4.4 Run the frontend
-bash
+Backend runs at:
+http://localhost:8080
+
+Static images are served from:
+src/main/resources/static/images/sweets/
+
+Spring Security allows public access to /images/** and auth endpoints.
+
+4.4 Run the Frontend
 cd m-frontend
 npm install
 npm run dev
-The React dev server will start (commonly on http://localhost:5173 or similar).
 
-The frontend is configured to talk to the backend at http://localhost:8080 for API calls and images.
+
+Frontend runs at:
+http://localhost:5173 (or similar)
 
 5. Testing & TDD
-This kata expects Test‑Driven Development:​
 
-Backend tests are written around core logic (e.g., sweets creation, purchase/restock rules, and possibly auth).
+This project follows Test-Driven Development (TDD) principles.
 
-The goal is to follow Red → Green → Refactor cycles, which should be visible in the commit history:
+Tests written before implementation
 
-First commit a failing test.
+Red → Green → Refactor cycles
 
-Then commit the implementation that makes it pass.
+Commit history reflects incremental development
 
-Then clean up and refactor when needed.
-
-To run backend tests:
-
-bash
+Run Backend Tests
 cd backend
 mvn test
-If you have frontend tests (Jest/React Testing Library), they can be run from m-frontend with:
 
-bash
+Run Frontend Tests (if implemented)
+cd m-frontend
 npm test
-You can export test reports or screenshots of the test output as part of the deliverables.
 
 6. Screenshots
-In the final repo, add a screenshots/ folder and include images such as:​
 
-Login page.
+A screenshots/ folder can be added containing:
 
-Dashboard showing sweets with categories and search bar.
+Login page
 
-Admin page showing add/update sweet form.
+Dashboard with sweets and filters
 
+Admin management screen
 
 7. My AI Usage
-This project intentionally uses AI tools as part of the development workflow, following the kata’s AI usage policy.​
+
+This project intentionally uses AI tools as part of the development workflow, following responsible and transparent practices.
 
 Tools Used
+
 ChatGPT
 
 Claude
 
-Cursor AI (AI pair‑programming inside the IDE)
+Cursor AI (IDE-integrated pair programming)
 
-How AI was used
-Brainstorming & design (ChatGPT):
+How AI Was Used
+1. Brainstorming & Design (ChatGPT)
 
-Used to clarify the kata requirements in plain English, break down the work into phases (auth, sweets CRUD, images, categories, search), and design the API shape and entity relationships.
+Clarified kata requirements in plain English
 
-Helped reason about trade‑offs, such as doing search on the frontend vs backend first.​
+Broke the project into clear phases (auth, CRUD, inventory, frontend)
 
-Boilerplate & scaffolding (Cursor):
+Designed REST API structure and entity relationships
 
-Used to generate initial Spring Boot boilerplate: controller skeletons, service interfaces, JPA entities, Flyway migration files, and some React components.
+Evaluated trade-offs (frontend vs backend filtering)
 
-Used to add fields like imageUrl and category across entity, migration, repository, and DTO in a consistent way with minimal manual typing.
+2. Boilerplate & Scaffolding (Cursor AI)
 
-Debugging & fixes (ChatGPT + Claude):
+Generated initial Spring Boot controller and service skeletons
 
-Helped debug PostgreSQL authentication issues, schema mismatches, and Spring Security 403 errors for /api/sweets and /images/**.
+Created JPA entities and Flyway migration templates
 
-Assisted in diagnosing why external image URLs (Unsplash, Pexels) were returning 403 due to hotlinking/CORS, and led to the decision to store images locally in resources/static.
+Assisted in propagating new fields (imageUrl, category) consistently across layers
 
-Guided the implementation of the combined search + category filter on the frontend, including state handling and filtering logic.
+Reduced repetitive manual typing while keeping logic human-reviewed
 
-Documentation & commit messages (ChatGPT):
+3. Debugging & Problem Solving (ChatGPT + Claude)
 
-Helped draft the README content you are reading now, keeping it aligned with the kata document and making sure the “My AI Usage” section is explicit.​
+Diagnosed PostgreSQL authentication and schema mismatch issues
 
-Suggested commit message formats that respect co-author requirements.
+Resolved Spring Security 403 errors for protected endpoints and static resources
 
-Co‑Authorship in Git
-For commits where AI tools contributed significantly (for example, generating boilerplate code or suggesting a complete fix), co-author trailers were added, such as:
+Identified external image hotlinking/CORS issues and guided the move to local static images
+
+Helped design combined search + category filtering logic on the frontend
+
+4. Documentation & Communication (ChatGPT)
+
+Assisted in drafting this README
+
+Helped structure explanations clearly for reviewers and interviewers
+
+Suggested consistent and transparent commit message formats
+
+Reflection on AI Impact
+
+AI significantly improved development speed, clarity, and confidence, especially during early design and debugging phases.
+However, all AI-generated code and suggestions were reviewed, modified, and validated manually.
+
+AI was treated as a pair programmer, not a replacement for understanding or decision-making.
+This ensured correctness, maintainability, and accountability for all final code.
+
+Co-Authorship Transparency
+
+For commits where AI contributed substantially, co-author trailers were added:
 
 Co-authored-by: ChatGPT <chatgpt@users.noreply.github.com>
-
 Co-authored-by: Claude <claude@users.noreply.github.com>
-
 Co-authored-by: Cursor AI <cursor@users.noreply.github.com>
 
-This makes the AI involvement transparent and keeps a clear audit trail in the commit history, as required by the kata.​
 
+This maintains a clear audit trail and transparency, as required by the kata
