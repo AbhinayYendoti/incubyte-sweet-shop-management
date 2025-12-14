@@ -18,3 +18,4 @@ export const DEFAULT_CATEGORY = 'mithai';
  * Set to undefined to allow purchase (only disable if explicitly 0)
  */
 export const DEFAULT_QUANTITY = undefined;
+

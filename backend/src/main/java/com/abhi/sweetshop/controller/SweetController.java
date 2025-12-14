@@ -20,13 +20,11 @@ public class SweetController {
     }
 
     @GetMapping
-    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<List<SweetItem>> getAllSweets() {
         return ResponseEntity.ok(sweetService.listAllSweets());
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<SweetItem> getSweetById(@PathVariable Long id) {
         try {
             SweetItem sweet = sweetService.getSweetById(id);

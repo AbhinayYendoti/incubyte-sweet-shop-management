@@ -28,7 +28,7 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { toast } from '@/hooks/use-toast';
 import { formatPrice } from '@/lib/currency';
-import { DEFAULT_SWEET_IMAGE } from '@/lib/constants';
+import { getImageUrl } from '@/lib/api-config';
 import { Plus, Pencil, Trash2, Package, IndianRupee, AlertTriangle, Loader2 } from 'lucide-react';
 
 const Admin = () => {
@@ -207,7 +207,7 @@ const Admin = () => {
                       <TableCell>
                         <div className="flex items-center gap-3">
                           <img 
-                            src={sweet.image || DEFAULT_SWEET_IMAGE} 
+                            src={getImageUrl(sweet.image)} 
                             alt={sweet.name || 'Sweet item'}
                             className="w-12 h-12 rounded-lg object-cover"
                           />

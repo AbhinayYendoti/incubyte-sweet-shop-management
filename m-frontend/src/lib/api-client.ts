@@ -63,6 +63,21 @@ class ApiClient {
    */
   clearToken(): void {
     localStorage.removeItem('jwt_token');
+    localStorage.removeItem('user_name');
+  }
+
+  /**
+   * Store user name in localStorage
+   */
+  setUserName(name: string): void {
+    localStorage.setItem('user_name', name);
+  }
+
+  /**
+   * Get user name from localStorage
+   */
+  getUserName(): string | null {
+    return localStorage.getItem('user_name');
   }
 
   /**

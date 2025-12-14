@@ -65,6 +65,6 @@ public class AuthenticationService {
         String token = jwtService.generateToken(user);
 
         String roleName = user.getRole() != null ? user.getRole().name() : "USER";
-        return new LoginResponse(token, user.getEmail(), roleName);
+        return new LoginResponse(token, user.getName(), roleName);
     }
 }

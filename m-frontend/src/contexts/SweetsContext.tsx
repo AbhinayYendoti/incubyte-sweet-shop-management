@@ -20,7 +20,7 @@ const SweetsContext = createContext<SweetsContextType | undefined>(undefined);
 
 /**
  * Convert backend SweetItem to frontend Sweet
- * Backend doesn't have category, quantity, image, origin - these are set to defaults
+ * Backend now has category and imageUrl fields - use them if available
  * Handles null/undefined backend fields safely
  */
 const toSweet = (item: SweetItem): Sweet => {
@@ -28,10 +28,12 @@ const toSweet = (item: SweetItem): Sweet => {
     ...item,
     // Ensure description is explicitly undefined if null (not sent to backend)
     description: item.description ?? undefined,
+    // Use backend category if available (normalize to lowercase), otherwise default
+    category: item.category?.toLowerCase() || DEFAULT_CATEGORY,
+    // Use backend imageUrl if available, otherwise default
+    image: item.imageUrl || DEFAULT_SWEET_IMAGE,
     // Frontend-only fields with defaults
     quantity: undefined, // Backend doesn't track quantity - allow purchase unless explicitly set to 0
-    category: DEFAULT_CATEGORY, // Default category
-    image: DEFAULT_SWEET_IMAGE, // Default image
   };
 };
 

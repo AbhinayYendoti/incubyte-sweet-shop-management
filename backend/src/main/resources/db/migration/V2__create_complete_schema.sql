@@ -210,3 +210,4 @@ SELECT
 FROM inventory_items
 WHERE quantity < 10
 ORDER BY quantity ASC;
+

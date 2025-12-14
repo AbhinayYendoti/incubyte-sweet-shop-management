@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Sweet } from '@/types';
 import { formatPrice } from '@/lib/currency';
-import { DEFAULT_SWEET_IMAGE } from '@/lib/constants';
+import { getImageUrl } from '@/lib/api-config';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -45,7 +45,7 @@ const SweetCard = ({ sweet }: SweetCardProps) => {
     <Card className="group overflow-hidden border-border/50 bg-card hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
       <div className="relative overflow-hidden aspect-[4/3]">
         <img
-          src={sweet.image || DEFAULT_SWEET_IMAGE}
+          src={getImageUrl(sweet.image)}
           alt={sweet.name || 'Sweet item'}
           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
         />

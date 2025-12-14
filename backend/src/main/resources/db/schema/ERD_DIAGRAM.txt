@@ -136,3 +136,4 @@ inventory_items:
   - idx_inventory_items_low_stock (partial: WHERE quantity < 10)
 
 ═══════════════════════════════════════════════════════════════════════════════
+

@@ -27,10 +27,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       try {
         const payload = JSON.parse(atob(token.split('.')[1]));
         const role = payload.role || payload.authorities?.[0]?.authority || 'USER';
+        const email = payload.sub || payload.email || '';
+        // Try to get name from localStorage (stored during login/register)
+        const storedName = apiClient.getUserName();
         setUser({
           id: payload.sub ? parseInt(payload.sub) : 0,
-          email: payload.sub || payload.email || '',
-          name: payload.name || payload.username || '',
+          email: email,
+          name: storedName || payload.name || payload.username || email.split('@')[0], // Fallback to email username part
           role: role.toUpperCase() === 'ADMIN' ? 'ADMIN' : 'USER',
         });
       } catch (error) {
@@ -52,12 +55,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
       // Store token
       apiClient.setToken(token);
+      
+      // Store user name in localStorage for persistence across page refreshes
+      if (username) {
+        apiClient.setUserName(username);
+      }
 
       // Set user
       setUser({
         id: 0, // Backend doesn't return user ID in login response
         email,
-        name: username,
+        name: username || email.split('@')[0], // Use username from response, fallback to email prefix
         role: role.toUpperCase() === 'ADMIN' ? 'ADMIN' : 'USER',
       });
 
@@ -80,6 +88,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         email,
         password,
       } as RegisterRequest);
+
+      // Store user name in localStorage for when they login
+      if (name) {
+        apiClient.setUserName(name);
+      }
 
       // Registration successful - user needs to login
       return { success: true };

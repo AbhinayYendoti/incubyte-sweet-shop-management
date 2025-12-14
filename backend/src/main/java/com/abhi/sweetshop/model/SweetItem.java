@@ -19,6 +19,12 @@ public class SweetItem {
     @Column(nullable = false)
     private double price;
 
+    @Column(length = 500)
+    private String imageUrl;
+
+    @Column(length = 50)
+    private String category;
+
     public SweetItem() {
     }
 
@@ -52,6 +58,22 @@ public class SweetItem {
 
     public void setPrice(double price) {
         this.price = price;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 }
 

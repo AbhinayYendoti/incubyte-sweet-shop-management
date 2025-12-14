@@ -22,7 +22,12 @@ const Dashboard = () => {
       
       const matchesSearch = sweet.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                            (sweet.description?.toLowerCase().includes(searchTerm.toLowerCase()) ?? false);
-      const matchesCategory = selectedCategory === 'all' || (sweet.category ?? DEFAULT_CATEGORY) === selectedCategory;
+      
+      // Category filtering: compare lowercase values for case-insensitive matching
+      const sweetCategory = (sweet.category ?? DEFAULT_CATEGORY).toLowerCase();
+      const selectedCategoryLower = selectedCategory.toLowerCase();
+      const matchesCategory = selectedCategory === 'all' || sweetCategory === selectedCategoryLower;
+      
       return matchesSearch && matchesCategory;
     });
   }, [sweets, searchTerm, selectedCategory]);

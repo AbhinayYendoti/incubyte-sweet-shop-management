@@ -1,12 +1,15 @@
 /**
  * Backend SweetItem model
  * Matches: com.abhi.sweetshop.model.SweetItem
+ * Note: Backend now includes category and imageUrl fields
  */
 export interface SweetItem {
   id: number;
   name: string;
   description?: string;
   price: number;
+  category?: string;
+  imageUrl?: string;
 }
 
 /**
