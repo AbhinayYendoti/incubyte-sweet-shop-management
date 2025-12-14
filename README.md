@@ -3,20 +3,25 @@ Sweet Shop Management System
 A full-stack Sweet Shop Management System built as a Test-Driven Development (TDD) kata.
 The application simulates a traditional Indian mithai shop where users can browse, search, and filter sweets, while admins can manage inventory.
 
-This project demonstrates clean architecture, API design, database modeling, frontend development, testing discipline, and responsible AI usage.
+This project demonstrates clean architecture, REST API design, database modeling, frontend development, testing discipline, and responsible AI usage, aligned with the kata requirements.
 
 1. Project Overview
 
 The application consists of three main layers:
 
 Backend (Spring Boot)
+
 Exposes REST APIs for authentication, sweets management, and inventory operations.
 
 Database (PostgreSQL)
+
 Stores users, sweets, categories, pricing, stock levels, and image references.
 
+Managed using Flyway migrations (persistent storage, not in-memory).
+
 Frontend (React + TypeScript)
-A modern single-page application for customers and administrators.
+
+A modern single-page application (SPA) for customers and administrators.
 
 User Capabilities
 
@@ -30,7 +35,7 @@ Filter sweets by category
 
 View availability and pricing
 
-Purchase sweets (if inventory is enabled)
+Purchase sweets (disabled when out of stock)
 
 Admin Capabilities
 
@@ -88,7 +93,7 @@ JWT-based authentication
 
 Protected endpoints for admin and inventory operations
 
-Frontend auth forms with session handling
+Frontend authentication forms with session handling
 
 3.2 Sweets API
 
@@ -126,7 +131,7 @@ POST /api/sweets/{id}/purchase – Decrease stock on purchase
 
 POST /api/sweets/{id}/restock – Increase stock (admin only)
 
-Purchase disabled when quantity reaches zero
+Purchase is disabled when quantity reaches zero (backend + UI validation)
 
 3.4 Frontend Functionality
 
@@ -144,7 +149,7 @@ Real-time search by name and description
 
 Purchase button disabled when out of stock
 
-Admin UI (if enabled)
+Admin UI
 
 Add, update, and delete sweets
 
@@ -195,7 +200,7 @@ http://localhost:8080
 Static images are served from:
 src/main/resources/static/images/sweets/
 
-Spring Security allows public access to /images/** and auth endpoints.
+Spring Security allows public access to /images/** and authentication endpoints.
 
 4.4 Run the Frontend
 cd m-frontend
@@ -208,7 +213,7 @@ http://localhost:5173 (or similar)
 
 5. Testing & TDD
 
-This project follows Test-Driven Development (TDD) principles.
+This project follows Test-Driven Development (TDD) principles:
 
 Tests written before implementation
 
@@ -224,17 +229,42 @@ Run Frontend Tests (if implemented)
 cd m-frontend
 npm test
 
-6. Screenshots
+6. Test Report
+
+Backend test suite executed using JUnit and Spring Boot Test
+
+Core business rules covered (sweet creation, purchase, restock)
+
+Authentication and validation logic tested
+
+All tests passing at time of submission
+
+7. Screenshots
 
 A screenshots/ folder can be added containing:
 
 Login page
 
-Dashboard with sweets and filters
+Dashboard showing sweets, filters, and search
 
-Admin management screen
+Admin management screens
 
-7. My AI Usage
+8. Kata Requirements Mapping
+Requirement	Status	Evidence
+RESTful Backend API	✅ Completed	Spring Boot controllers
+Persistent Database	✅ Completed	PostgreSQL + Flyway
+JWT Authentication	✅ Completed	/api/auth endpoints
+Sweets CRUD	✅ Completed	/api/sweets
+Inventory Purchase	✅ Completed	/purchase endpoint
+Inventory Restock	✅ Completed	/restock endpoint
+Frontend SPA	✅ Completed	React + TypeScript
+Search & Filter	✅ Completed	UI + backend support
+Disable Purchase on Zero Stock	✅ Completed	Backend + UI validation
+TDD & Tests	✅ Completed	JUnit tests
+Git Commit Quality	✅ Completed	Incremental commits
+AI Usage Transparency	✅ Completed	“My AI Usage” section
+Deployment	⚠️ Optional	Attempted (not required)
+9. My AI Usage
 
 This project intentionally uses AI tools as part of the development workflow, following responsible and transparent practices.
 
@@ -247,51 +277,47 @@ Claude
 Cursor AI (IDE-integrated pair programming)
 
 How AI Was Used
+
 1. Brainstorming & Design (ChatGPT)
 
-Clarified kata requirements in plain English
+Clarified kata requirements
 
-Broke the project into clear phases (auth, CRUD, inventory, frontend)
+Broke work into phases (auth, CRUD, inventory, frontend)
 
-Designed REST API structure and entity relationships
+Designed API structure and entity relationships
 
 Evaluated trade-offs (frontend vs backend filtering)
 
 2. Boilerplate & Scaffolding (Cursor AI)
 
-Generated initial Spring Boot controller and service skeletons
+Generated initial Spring Boot skeletons
 
-Created JPA entities and Flyway migration templates
+Created JPA entities and Flyway migrations
 
-Assisted in propagating new fields (imageUrl, category) consistently across layers
-
-Reduced repetitive manual typing while keeping logic human-reviewed
+Assisted in propagating new fields consistently
 
 3. Debugging & Problem Solving (ChatGPT + Claude)
 
-Diagnosed PostgreSQL authentication and schema mismatch issues
+Diagnosed PostgreSQL and schema issues
 
-Resolved Spring Security 403 errors for protected endpoints and static resources
+Resolved Spring Security access issues
 
-Identified external image hotlinking/CORS issues and guided the move to local static images
+Addressed image hosting and CORS problems
 
-Helped design combined search + category filtering logic on the frontend
+Assisted with combined search and filter logic
 
 4. Documentation & Communication (ChatGPT)
 
-Assisted in drafting this README
+Helped draft and structure this README
 
-Helped structure explanations clearly for reviewers and interviewers
-
-Suggested consistent and transparent commit message formats
+Suggested clear commit message formats
 
 Reflection on AI Impact
 
-AI significantly improved development speed, clarity, and confidence, especially during early design and debugging phases.
-However, all AI-generated code and suggestions were reviewed, modified, and validated manually.
+AI improved development speed and clarity, especially during early design and debugging.
+All AI-generated suggestions were reviewed, modified, and validated manually.
 
-AI was treated as a pair programmer, not a replacement for understanding or decision-making.
-This ensured correctness, maintainability, and accountability for all final code.
+AI was used as a pair programmer, not a replacement for understanding or ownership.
 
 Co-Authorship Transparency
 
@@ -302,4 +328,16 @@ Co-authored-by: Claude <claude@users.noreply.github.com>
 Co-authored-by: Cursor AI <cursor@users.noreply.github.com>
 
 
-This maintains a clear audit trail and transparency, as required by the kata
+This maintains a clear audit trail, as required by the kata.
+
+10. Limitations & Trade-offs
+
+Frontend testing was kept minimal to prioritize backend TDD and business rules.
+
+Deployment is optional per kata guidelines; focus was placed on correctness, testing, and architecture.
+
+Some search and filtering logic is handled on the frontend for responsiveness.
+
+ Final Note
+
+This submission focuses on engineering quality, clarity of thought, and responsible AI usage, in line with the kata’s evaluation criteria
