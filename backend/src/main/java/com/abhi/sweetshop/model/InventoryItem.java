@@ -16,7 +16,7 @@ public class InventoryItem {
     @Column(length = 1000)
     private String description;
 
-    @Column(nullable = false, precision = 10, scale = 2)
+    @Column(nullable = false)
     private double price;
 
     @Column(nullable = false)

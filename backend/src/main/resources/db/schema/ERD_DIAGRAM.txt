@@ -1,0 +1,138 @@
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                    SWEET SHOP MANAGEMENT SYSTEM - ERD                        ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                              USERS TABLE                                     │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ PK │ id              │ BIGSERIAL                                            │
+│    │ name            │ VARCHAR(255) NOT NULL                               │
+│ UK │ email           │ VARCHAR(255) NOT NULL UNIQUE                        │
+│    │ password        │ VARCHAR(255) NOT NULL                                │
+│    │ role            │ VARCHAR(50) NOT NULL DEFAULT 'USER'                 │
+│    │ created_at      │ TIMESTAMP DEFAULT CURRENT_TIMESTAMP                 │
+│    │ updated_at      │ TIMESTAMP DEFAULT CURRENT_TIMESTAMP                 │
+└────┴──────────────────┴────────────────────────────────────────────────────┘
+     │
+     │ 1
+     │
+     │ N
+     │
+┌────▼─────────────────────────────────────────────────────────────────────────┐
+│                              ORDERS TABLE                                    │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ PK │ id              │ BIGSERIAL                                            │
+│ FK │ user_id         │ BIGINT → users(id) ON DELETE SET NULL                │
+│    │ customer_name   │ VARCHAR(255) NOT NULL                               │
+│    │ total_amount    │ DECIMAL(10,2) NOT NULL CHECK >= 0                   │
+│    │ status          │ VARCHAR(50) DEFAULT 'PENDING'                       │
+│    │ created_at      │ TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP        │
+│    │ updated_at      │ TIMESTAMP DEFAULT CURRENT_TIMESTAMP                 │
+└────┴──────────────────┴────────────────────────────────────────────────────┘
+     │
+     │ 1
+     │
+     │ N
+     │
+┌────▼─────────────────────────────────────────────────────────────────────────┐
+│                          ORDER_ITEMS TABLE                                  │
+│                    (RECOMMENDED - Currently Missing)                         │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ PK │ id              │ BIGSERIAL                                            │
+│ FK │ order_id        │ BIGINT → orders(id) ON DELETE CASCADE                │
+│ FK │ sweet_item_id   │ BIGINT → sweet_items(id) ON DELETE SET NULL         │
+│ FK │ inventory_item_ │ BIGINT → inventory_items(id) ON DELETE SET NULL      │
+│    │   id            │                                                     │
+│    │ item_name       │ VARCHAR(255) NOT NULL (denormalized)                │
+│    │ quantity        │ INTEGER NOT NULL CHECK > 0                           │
+│    │ unit_price      │ DECIMAL(10,2) NOT NULL CHECK >= 0                    │
+│    │ subtotal        │ DECIMAL(10,2) NOT NULL CHECK >= 0                   │
+│    │ created_at      │ TIMESTAMP DEFAULT CURRENT_TIMESTAMP                 │
+└────┴──────────────────┴────────────────────────────────────────────────────┘
+     │                    │
+     │                    │
+     │ N                  │ N
+     │                    │
+     │                    │
+┌────┴────────────────────┴───────────────────────────────────────────────────┐
+│                                                                              │
+│  ┌──────────────────────────┐      ┌──────────────────────────────┐        │
+│  │    SWEET_ITEMS TABLE      │      │  INVENTORY_ITEMS TABLE       │        │
+│  ├──────────────────────────┤      ├──────────────────────────────┤        │
+│  │ PK │ id                  │      │ PK │ id                      │        │
+│  │    │ name                │      │    │ name                    │        │
+│  │    │ description         │      │    │ description             │        │
+│  │    │ price               │      │    │ price                   │        │
+│  │    │ created_at          │      │    │ quantity                │        │
+│  │    │ updated_at          │      │    │ created_at              │        │
+│  └──────────────────────────┘      │    │ updated_at               │        │
+│                                    └──────────────────────────────┘        │
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+═══════════════════════════════════════════════════════════════════════════════
+
+RELATIONSHIPS:
+─────────────
+
+1. users (1) ──────< (N) orders
+   - One user can place many orders
+   - Order can exist without user (guest orders via customer_name)
+
+2. orders (1) ──────< (N) order_items
+   - One order contains many items
+   - CASCADE delete: deleting order deletes all items
+
+3. order_items (N) ──────> (1) sweet_items
+   - Many order items can reference one sweet
+   - SET NULL on delete: preserves order history
+
+4. order_items (N) ──────> (1) inventory_items
+   - Many order items can reference one inventory item
+   - SET NULL on delete: preserves order history
+
+═══════════════════════════════════════════════════════════════════════════════
+
+KEY CONSTRAINTS:
+────────────────
+
+✓ Primary Keys: All tables have BIGSERIAL id
+✓ Foreign Keys: Proper referential integrity
+✓ Unique Constraints: users.email
+✓ Check Constraints: 
+  - prices >= 0
+  - quantities >= 0
+  - order quantities > 0
+  - roles in ('USER', 'ADMIN')
+  - status in ('PENDING', 'CONFIRMED', 'CANCELLED', 'COMPLETED')
+
+═══════════════════════════════════════════════════════════════════════════════
+
+INDEXES:
+────────
+
+users:
+  - idx_users_email (UNIQUE)
+  - idx_users_role
+
+orders:
+  - idx_orders_user_id
+  - idx_orders_customer_name
+  - idx_orders_created_at (DESC)
+  - idx_orders_status
+
+order_items:
+  - idx_order_items_order_id
+  - idx_order_items_sweet_item_id
+  - idx_order_items_inventory_item_id
+
+sweet_items:
+  - idx_sweet_items_name
+  - idx_sweet_items_price
+
+inventory_items:
+  - idx_inventory_items_name
+  - idx_inventory_items_quantity
+  - idx_inventory_items_low_stock (partial: WHERE quantity < 10)
+
+═══════════════════════════════════════════════════════════════════════════════

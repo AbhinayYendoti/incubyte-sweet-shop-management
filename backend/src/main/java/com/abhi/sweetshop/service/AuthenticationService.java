@@ -3,6 +3,7 @@ package com.abhi.sweetshop.service;
 import com.abhi.sweetshop.dto.auth.LoginRequest;
 import com.abhi.sweetshop.dto.auth.LoginResponse;
 import com.abhi.sweetshop.dto.auth.RegisterRequest;
+import com.abhi.sweetshop.exception.UserAlreadyExistsException;
 import com.abhi.sweetshop.model.Role;
 import com.abhi.sweetshop.model.User;
 import com.abhi.sweetshop.repository.UserRepository;
@@ -25,9 +26,25 @@ public class AuthenticationService {
     }
 
     public User register(RegisterRequest request) {
+        // Validate required fields
+        if (request.getName() == null || request.getName().trim().isEmpty()) {
+            throw new IllegalArgumentException("Name cannot be empty");
+        }
+        if (request.getEmail() == null || request.getEmail().trim().isEmpty()) {
+            throw new IllegalArgumentException("Email cannot be empty");
+        }
+        if (request.getPassword() == null || request.getPassword().isEmpty()) {
+            throw new IllegalArgumentException("Password cannot be empty");
+        }
+
+        // Check if email already exists
+        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
+            throw new UserAlreadyExistsException("Email already exists");
+        }
+
         User user = new User();
-        user.setName(request.getName());
-        user.setEmail(request.getEmail());
+        user.setName(request.getName().trim());
+        user.setEmail(request.getEmail().trim());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setRole(Role.USER);
 

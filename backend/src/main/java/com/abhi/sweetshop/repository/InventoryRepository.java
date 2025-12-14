@@ -8,3 +8,6 @@ import org.springframework.stereotype.Repository;
 public interface InventoryRepository extends JpaRepository<InventoryItem, Long> {
 }
 
+
+
+
